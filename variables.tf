@@ -33,7 +33,7 @@ variable "webserver-port" {
   default = 8080
 }
 
-variable "dns-name" {
+variable "dns-names" {
   type    = string
   default = "ocpaws.org."
 }
