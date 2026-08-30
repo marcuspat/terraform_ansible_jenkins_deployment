@@ -1,18 +1,18 @@
 # Terraform & Ansible Jenkins Deployment
 
-Complete infrastructure as code solution for deploying Jenkins CI/CD platform on AWS with integrated Ansible automation.
+Infrastructure as code for deploying a Jenkins CI/CD master/worker setup on AWS, combining Terraform for provisioning with Ansible for configuration.
 
 ## 🎯 Overview
 
-This repository provides a complete Jenkins deployment solution combining **Terraform** for AWS infrastructure provisioning and **Ansible** for Jenkins configuration. It automatically sets up a production-ready Jenkins environment with proper networking, security, and scaling capabilities.
+This repository deploys Jenkins on AWS using **Terraform** for infrastructure and **Ansible** for configuration — a VPC, an Application Load Balancer, EC2 instances for Jenkins master and workers, security groups, DNS, and TLS via ACM.
 
 ## 🏗️ Architecture
 
 **Infrastructure Components:**
 - **AWS VPC** with public and private subnets
-- **Application Load Balancer** for high availability
+- **Application Load Balancer** for the Jenkins master
 - **EC2 instances** for Jenkins master and workers
-- **Security groups** with proper access controls
+- **Security groups** with scoped access controls
 - **DNS integration** for domain management
 - **SSL/TLS certificates** via AWS ACM
 
@@ -35,11 +35,11 @@ This repository provides a complete Jenkins deployment solution combining **Terr
 - **ansible/templates/jenkins-worker-sample.yml** - Worker configuration
 - **ansible/templates/jenkins-master-sample.yml** - Master configuration
 - **ansible/templates/install_worker.yml** - Worker setup
-- **ansible.cfg** - Complete Ansible configuration (730KB)
+- **ansible.cfg** - Ansible configuration
 - **ansible/templates/inventory_aws/** - Dynamic EC2 inventory
 
 ### Documentation
-- **jenkins_aws_diagram.png** - Architecture diagram (730KB)
+- **jenkins_aws_diagram.png** - Architecture diagram
 
 ## 🚀 Quick Start
 
@@ -60,7 +60,7 @@ cd terraform_ansible_jenkins_deployment
 # Initialize Terraform
 terraform init
 
-# Plan deployment
+# Plan deployment — review before applying
 terraform plan
 
 # Deploy infrastructure
@@ -93,7 +93,7 @@ variable "jenkins_instance_count" {
 ```
 
 ### Ansible Configuration
-The repository includes a comprehensive `ansible.cfg` file with:
+The repository includes an `ansible.cfg` with:
 - **Inventory settings** for AWS dynamic discovery
 - **SSH configuration** for secure access
 - **Jinja2 template** settings
@@ -102,84 +102,61 @@ The repository includes a comprehensive `ansible.cfg` file with:
 
 ## 🛠️ Features
 
-### Infrastructure Automation
-- **VPC with HA architecture** - Multi-AZ deployment
-- **Load Balancing** - ALB for traffic distribution
-- **Auto Scaling** - Automatic worker scaling
-- **SSL/TLS** - Secure HTTPS with ACM certificates
+### Infrastructure
+- **VPC with public/private subnets** - Multi-subnet layout
+- **Load Balancing** - ALB for traffic to the Jenkins master
+- **SSL/TLS** - HTTPS via ACM certificates
 - **DNS Management** - Route53 integration
 
 ### Jenkins Configuration
-- **Master-Worker Architecture** - Scalable build farm
-- **Automated Installation** - Hands-off deployment
-- **Security Hardening** - Proper access controls
-- **Backup Ready** - Data persistence and recovery
-- **Monitoring Ready** - CloudWatch integration
+- **Master-Worker Architecture** - Separate master and worker roles
+- **Automated Installation** - Ansible-driven setup
+- **Security Groups** - Scoped network access
 
 ### Security Features
 - **Security Groups** - Network-level access control
-- **IAM Roles** - Proper AWS permissions
+- **IAM Roles** - AWS permissions scoped to the deployment
 - **Key Management** - SSH key management
 - **Network Isolation** - Private subnets for workers
 - **SSL Encryption** - Data in transit protection
 
+> **Not included:** this repo does not configure Auto Scaling or CloudWatch. Worker count is a fixed Terraform variable (`jenkins_instance_count`), not an autoscaling group, and there's no CloudWatch metrics/alarms wiring. Add both yourself if you need them.
+
 ## 📋 Architecture Diagram
 
-The repository includes `jenkins_aws_diagram.png` showing:
-- VPC architecture with subnets
-- Load balancer configuration
-- Jenkins master and worker placement
-- Security group relationships
-- Network flow and routing
+`jenkins_aws_diagram.png` shows the VPC layout, load balancer placement, Jenkins master/worker placement, security group relationships, and network flow.
 
 ## 🎓 Use Cases
 
-**CI/CD Infrastructure:**
-- Production Jenkins deployment
-- Multi-environment pipelines
-- Automated testing infrastructure
-- Continuous deployment platforms
-
-**DevOps Automation:**
-- Infrastructure as code demonstration
-- Terraform + Ansible integration
-- AWS best practices implementation
-- High availability setup
+- Learning Terraform + Ansible integration for a real multi-service AWS deployment
+- A starting point for a Jenkins CI/CD environment on AWS
+- Reference for VPC/ALB/ACM/Route53 wiring in Terraform
 
 ## 🔧 Scaling
 
-**Horizontal Scaling:**
+Worker count is set via a Terraform variable, applied manually:
 ```bash
-# Scale Jenkins workers
+# Change worker count
 terraform apply -var="jenkins_instance_count=5"
 
-# Add build agents
+# Add build agents via Ansible
 cd ansible
 ansible-playbook -i inventory_aws/ install_worker.yml
 ```
 
-## 📊 Monitoring
-
-**AWS CloudWatch:**
-- Instance metrics and logs
-- ALB health checks
-- VPC flow logs
-- Jenkins metrics integration
-
 ## 🤝 Contributing
 
-Contributions welcome! This is a complete production-ready Jenkins deployment solution.
+Contributions welcome — this is a lab-grade reference deployment, not a maintained platform.
 
 ## 📚 Related Repositories
 
-- **IAC** - General infrastructure as code
 - **devops** - DevOps automation collection
 - **Misc_Ansible_Playbooks** - Ansible playbook examples
 
 ## 📝 License
 
-Infrastructure automation - Free to use and modify.
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-**Terraform & Ansible Jenkins Deployment** - Production-ready CI/CD infrastructure with comprehensive automation and security.
+**Terraform & Ansible Jenkins Deployment** — a lab-grade reference for deploying Jenkins on AWS with Terraform and Ansible.
