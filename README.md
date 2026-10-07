@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/banner.svg" alt="terraform_ansible_jenkins_deployment — animated banner" width="100%"></p>
+
 # Terraform & Ansible Jenkins Deployment
 
 Infrastructure as code for deploying a Jenkins CI/CD master/worker setup on AWS, combining Terraform for provisioning with Ansible for configuration.
